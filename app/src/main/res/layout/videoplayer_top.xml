@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--系统信息-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_video_system_status"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="6dp">
+        <!--文件名-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="文件名"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+
+        <!--系统电量-->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:src="@drawable/ic_battery_20" />
+
+        <!--系统时间-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="系统时间"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!--音量控制-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_video_volume_control"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <!--静音-->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/video_mute_selector" />
+
+        <!--音量控制条-->
+        <SeekBar
+            style="@android:style/Widget.SeekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="20dp"
+            android:maxHeight="6dp"
+            android:minHeight="6dp"
+            android:progress="50"
+            android:progressDrawable="@drawable/video_seekbar_drawable"
+            android:thumb="@drawable/video_progress_thumb"
+            android:thumbOffset="0dp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

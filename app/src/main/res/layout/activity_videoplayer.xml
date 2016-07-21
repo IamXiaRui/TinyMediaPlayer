@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--视频部分-->
+    <VideoView
+        android:id="@+id/vv_videoplayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!--顶部布局-->
+    <include layout="@layout/videoplayer_top" />
+
+    <!--底部布局-->
+    <include
+        layout="@layout/videoplayer_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

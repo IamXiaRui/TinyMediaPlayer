@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <!--icon-->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_video_default" />
+
+    <!--视频信息-->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!--文件名-->
+        <TextView
+            android:id="@+id/tv_video_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="文件名"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+
+        <!--文件时长-->
+        <TextView
+            android:id="@+id/tv_video_item_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:singleLine="true"
+            android:text="文件时长"
+            android:textColor="#4fff"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <!--文件大小-->
+    <TextView
+        android:id="@+id/tv_video_item_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:singleLine="true"
+        android:text="文件大小"
+        android:textColor="#4fff"
+        android:textSize="14sp" />
+
+</LinearLayout>

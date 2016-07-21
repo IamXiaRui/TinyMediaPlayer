@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_splash"
+    tools:context=".ui.activity.MainActivity">
+
+    <!--标题栏-->
+    <LinearLayout
+        android:id="@+id/ll_main_titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_main_titlebar"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_main_video"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="视频"
+            android:textColor="#38B259"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_main_music"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="音乐"
+            android:textColor="#6fff"
+            android:textSize="18sp" />
+
+
+    </LinearLayout>
+    <!--指示器-->
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="55dp"
+        android:layout_height="2dp"
+        android:layout_alignBottom="@id/ll_main_titlebar"
+        android:background="#38B259" />
+
+    <!--列表-->
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/ll_main_titlebar" />
+
+</RelativeLayout>
