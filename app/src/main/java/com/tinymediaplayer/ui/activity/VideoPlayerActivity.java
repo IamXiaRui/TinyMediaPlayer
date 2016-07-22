@@ -9,12 +9,14 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.nineoldandroids.view.ViewHelper;
 import com.tinymediaplayer.R;
 import com.tinymediaplayer.bean.VideoItemBean;
 import com.tinymediaplayer.utils.StringUtil;
@@ -49,6 +51,11 @@ public class VideoPlayerActivity extends BaseActivity {
     private AudioManager mAudioManeger;
     private ImageView mMuteImage;
     private int oldVolume;
+    private float mStartY;
+    private int mStartVolume;
+    private View mCoverView;
+    private float mStartAlpha;
+    private float mStartX;
 
     @Override
     public int getLayoutId() {
@@ -60,8 +67,10 @@ public class VideoPlayerActivity extends BaseActivity {
      */
     @Override
     public void initView() {
+        //全局面板
         mVideoView = (VideoView) findViewById(R.id.vv_videoplayer);
-        mPauseImage = (ImageView) findViewById(R.id.iv_videoplayer_pause);
+        mCoverView = findViewById(R.id.view_player_cover);
+
         //顶部面板
         mTopTitleText = (TextView) findViewById(R.id.tv_top_title);
         mTopBatteryImage = (ImageView) findViewById(R.id.iv_top_battery);
@@ -69,6 +78,9 @@ public class VideoPlayerActivity extends BaseActivity {
         mTopVoiceBar = (SeekBar) findViewById(R.id.sb_top_voice);
         mMuteImage = (ImageView) findViewById(R.id.iv_top_mute);
         //底部面板
+        mPauseImage = (ImageView) findViewById(R.id.iv_videoplayer_pause);
+
+
     }
 
     @Override
@@ -94,6 +106,8 @@ public class VideoPlayerActivity extends BaseActivity {
 
         //设置视频的URL
         mVideoView.setVideoURI(Uri.parse(videoItemBean.getPath()));
+        //初始化亮度为最亮
+        ViewHelper.setAlpha(mCoverView, 0);
         //设置视频的标题
         mTopTitleText.setText(videoItemBean.getTitle());
         //动态更新系统时间
@@ -158,13 +172,21 @@ public class VideoPlayerActivity extends BaseActivity {
         //当前音量不为0的时候 记住当前音量 并静音
         if (getCurrentVolume() != 0) {
             oldVolume = getCurrentVolume();
-            mAudioManeger.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
-            mTopVoiceBar.setProgress(0);
+            updateVolume(0);
         } else {
             //当前已经是静音状态时 恢复原电量
-            mAudioManeger.setStreamVolume(AudioManager.STREAM_MUSIC, oldVolume, 0);
-            mTopVoiceBar.setProgress(oldVolume);
+            updateVolume(oldVolume);
         }
+    }
+
+    /**
+     * 更新音量
+     *
+     * @param volume 需要设置的音量
+     */
+    private void updateVolume(int volume) {
+        mAudioManeger.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
+        mTopVoiceBar.setProgress(volume);
     }
 
     /**
@@ -190,6 +212,75 @@ public class VideoPlayerActivity extends BaseActivity {
         mHanlder.sendEmptyMessageDelayed(UPDATE_SYSTEM_TIME, 500);
     }
 
+    /**
+     * 触摸事件调节音量
+     *
+     * @param event 触摸事件
+     * @return 是否消费
+     */
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                //开始横坐标
+                mStartX = event.getX();
+                //开始纵坐标
+                mStartY = event.getY();
+                //开始音量
+                mStartVolume = getCurrentVolume();
+                mStartAlpha = ViewHelper.getAlpha(mCoverView);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                //手指当前位置横坐标
+                float currentX = event.getX();
+                //手指当前位置纵坐标
+                float currentY = event.getY();
+                //手指滑动位置
+                float moveY = currentY - mStartY;
+                //手指滑动距离占屏幕一半的百分比
+                int halfScreenY = getWindowManager().getDefaultDisplay().getHeight() / 2;
+                //移动的百分比
+                float movePercent = moveY / halfScreenY;
+                //屏幕宽度的一半
+                int halfScreenX = getWindowManager().getDefaultDisplay().getWidth() / 2;
+                if (event.getX() < halfScreenX) {
+                    //更改亮度
+                    changeLight(movePercent);
+                } else {
+                    //更改音量
+                    changeVolume(movePercent);
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    /**
+     * 根据手指滑动百分比更改屏幕亮度
+     *
+     * @param movePercent 滑动百分比
+     */
+    private void changeLight(float movePercent) {
+        //最终的亮度(透明度) = 初始亮度 + 变化的亮度
+        float finalAlpha = mStartAlpha + movePercent;
+        if (finalAlpha >= 0 && finalAlpha <= 1) {
+            ViewHelper.setAlpha(mCoverView, finalAlpha);
+        }
+    }
+
+    /**
+     * 根据手指滑动百分比更改音量
+     *
+     * @param movePercent 滑动百分比
+     */
+    private void changeVolume(float movePercent) {
+        //变化音量 = 手指滑动距离百分比 * 最大音量
+        int offsetVolume = (int) (movePercent * mTopVoiceBar.getMax());
+        //最终的音量 = 初始音量 + 变化的音量
+        int finalVolume = mStartVolume + offsetVolume;
+        //设置音量
+        updateVolume(finalVolume);
+    }
 
     /**
      * 视频准备事件监听器

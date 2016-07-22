@@ -20,4 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
 
+    <!--屏幕亮度遮罩-->
+    <View
+        android:id="@+id/view_player_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#c000" />
+
 </RelativeLayout>
