@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
@@ -23,6 +24,8 @@ public class MainActivity extends BaseActivity {
     private List<Fragment> mFragments;
     private MainPagerAdapter mPagerAdapter;
     private View mLineView;
+
+    private static long EXIT_TIME = 0;
 
     @Override
     public int getLayoutId() {
@@ -144,5 +147,16 @@ public class MainActivity extends BaseActivity {
             // 更改大小
             ViewPropertyAnimator.animate(tab).scaleX(1.0f).scaleY(1.0f);
         }
+    }
+
+    //再按一次退出程序
+    @Override
+    public void onBackPressed() {
+        if ((System.currentTimeMillis() - EXIT_TIME) > 2000) {
+            Toast.makeText(MainActivity.this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
+            EXIT_TIME = System.currentTimeMillis();
+            return;
+        }
+        finish();
     }
 }

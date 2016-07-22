@@ -1,5 +1,8 @@
 package com.tinymediaplayer.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * 格式化String
  */
@@ -31,5 +34,11 @@ public class StringUtil {
             // 大于一小时 01:01:01
             return String.format("%02d:%02d:%02d", hour, min, sec);
         }
+    }
+
+    public static String formatTime() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        return format.format(new Date());
+
     }
 }
