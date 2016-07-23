@@ -14,7 +14,7 @@ import android.widget.ListView;
 import com.tinymediaplayer.R;
 import com.tinymediaplayer.adapter.VideoListAdapter;
 import com.tinymediaplayer.bean.VideoItemBean;
-import com.tinymediaplayer.db.MyAsyncQueryHandler;
+import com.tinymediaplayer.db.VideoAsyncQueryHandler;
 import com.tinymediaplayer.ui.activity.VitamioPlayerActivity;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class VideoListFragment extends BaseFragment {
         // 从MediaProvider里查询视频信息
         ContentResolver resolver = getActivity().getContentResolver();
         //新建一个自定义异步查询Handler
-        AsyncQueryHandler asyncQueryHandler = new MyAsyncQueryHandler(resolver);
+        AsyncQueryHandler asyncQueryHandler = new VideoAsyncQueryHandler(resolver);
         //执行开始查询操作
         asyncQueryHandler.startQuery(0, mAdapter, Media.EXTERNAL_CONTENT_URI, new String[]{Media._ID, Media.DATA, Media.TITLE, Media.SIZE, Media.DURATION}, null, null, null);
     }

@@ -36,9 +36,21 @@ public class StringUtil {
         }
     }
 
+    /**
+     * 格式化时间
+     * @return 时间字符串
+     */
     public static String formatTime() {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         return format.format(new Date());
+    }
 
+    /**
+     * 格式化歌曲名称
+     * @param displayName 未格式化的歌曲名称
+     * @return 歌曲名称
+     */
+    public static String formatDisplayName(String displayName){
+        return displayName.substring(0, displayName.indexOf("."));
     }
 }
