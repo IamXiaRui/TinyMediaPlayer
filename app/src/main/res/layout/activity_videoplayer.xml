@@ -5,10 +5,11 @@
     android:orientation="vertical">
 
     <!--视频部分-->
-    <VideoView
+    <com.tinymediaplayer.ui.view.MyVideoView
         android:id="@+id/vv_videoplayer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
 
     <!--顶部布局-->
     <include layout="@layout/videoplayer_top" />
