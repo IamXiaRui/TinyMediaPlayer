@@ -34,7 +34,8 @@
             android:maxHeight="6dp"
             android:minHeight="6dp"
             android:progress="50"
-            android:progressDrawable="@drawable/video_seekbar_drawable"
+            android:secondaryProgress="80"
+            android:progressDrawable="@drawable/video_progress_drawable"
             android:thumb="@drawable/video_progress_thumb"
             android:thumbOffset="0dp" />
 

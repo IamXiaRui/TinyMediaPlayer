@@ -15,7 +15,7 @@ import com.tinymediaplayer.R;
 import com.tinymediaplayer.adapter.VideoListAdapter;
 import com.tinymediaplayer.bean.VideoItemBean;
 import com.tinymediaplayer.db.MyAsyncQueryHandler;
-import com.tinymediaplayer.ui.activity.VideoPlayerActivity;
+import com.tinymediaplayer.ui.activity.VitamioPlayerActivity;
 
 import java.util.ArrayList;
 
@@ -71,7 +71,7 @@ public class VideoListFragment extends BaseFragment {
             ArrayList<VideoItemBean> videoList = VideoItemBean.instanceListFromCursor(cursor);
 
             // 跳转到播放界面
-            Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
+            Intent intent = new Intent(getActivity(), VitamioPlayerActivity.class);
             intent.putExtra("videoList", videoList);
             intent.putExtra("position", position);
             startActivity(intent);
