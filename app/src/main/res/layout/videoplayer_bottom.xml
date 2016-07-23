@@ -14,6 +14,7 @@
         android:padding="6dp">
         <!--已播放时间-->
         <TextView
+            android:id="@+id/tv_bottom_yettime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="已播放时间"
@@ -22,6 +23,7 @@
 
         <!--时间控制条-->
         <SeekBar
+            android:id="@+id/sb_bottom_playertime"
             style="@android:style/Widget.SeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -37,6 +39,7 @@
 
         <!--总时间-->
         <TextView
+            android:id="@+id/tv_bottom_alltime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="总时间"
@@ -62,6 +65,7 @@
 
         <!--上一曲-->
         <ImageView
+            android:id="@+id/iv_bottom_pre"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -69,7 +73,7 @@
 
         <!--播放/暂停-->
         <ImageView
-            android:id="@+id/iv_videoplayer_pause"
+            android:id="@+id/iv_bottom_pause"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -77,6 +81,7 @@
 
         <!--下一曲-->
         <ImageView
+            android:id="@+id/iv_bottom_next"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

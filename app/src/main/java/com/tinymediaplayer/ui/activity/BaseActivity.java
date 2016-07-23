@@ -52,7 +52,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     /**
      * 对统一的按钮进行统一处理
      *
-     * @param v
+     * @param v 点击的View
      */
     @Override
     public void onClick(View v) {

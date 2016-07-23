@@ -4,11 +4,12 @@ import android.database.Cursor;
 import android.provider.MediaStore.Video.Media;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Video列表Bean
  */
-public class VideoItemBean implements Serializable{
+public class VideoItemBean implements Serializable {
 
     private String title;
     private int duration;
@@ -34,35 +35,42 @@ public class VideoItemBean implements Serializable{
         return videoItemBean;
     }
 
-    public String getTitle() {
-        return title;
+    /**
+     * 得到视频列表
+     *
+     * @param cursor 游标
+     * @return 返回视频列表
+     */
+    public static ArrayList<VideoItemBean> instanceListFromCursor(Cursor cursor) {
+        ArrayList<VideoItemBean> videoList = new ArrayList<>();
+        if (cursor == null || cursor.getCount() == 0) {
+            return videoList;
+        }
+        //先移动到最开始的位置之前
+        cursor.moveToPosition(-1);
+        //循环遍历列表
+        while (cursor.moveToNext()) {
+            VideoItemBean videoItemBean = instanceFromCursor(cursor);
+            videoList.add(videoItemBean);
+        }
+        return videoList;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getTitle() {
+        return title;
     }
 
     public int getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
     public int getSize() {
         return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
     }
 
     public String getPath() {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
+
 }

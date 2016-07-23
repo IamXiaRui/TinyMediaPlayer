@@ -1,9 +1,7 @@
 package com.tinymediaplayer.adapter;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Build;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,15 +19,6 @@ public class VideoListAdapter extends CursorAdapter {
 
     public VideoListAdapter(Context context, Cursor c) {
         super(context, c);
-    }
-
-    public VideoListAdapter(Context context, Cursor c, boolean autoRequery) {
-        super(context, c, autoRequery);
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public VideoListAdapter(Context context, Cursor c, int flags) {
-        super(context, c, flags);
     }
 
     @Override

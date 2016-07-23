@@ -17,6 +17,8 @@ import com.tinymediaplayer.bean.VideoItemBean;
 import com.tinymediaplayer.db.MyAsyncQueryHandler;
 import com.tinymediaplayer.ui.activity.VideoPlayerActivity;
 
+import java.util.ArrayList;
+
 /**
  * 视频列表
  */
@@ -66,11 +68,12 @@ public class VideoListFragment extends BaseFragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             // 获取被点击数据
             Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-            VideoItemBean videoItemBean = VideoItemBean.instanceFromCursor(cursor);
+            ArrayList<VideoItemBean> videoList = VideoItemBean.instanceListFromCursor(cursor);
 
             // 跳转到播放界面
             Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
-            intent.putExtra("videoItemBean", videoItemBean);
+            intent.putExtra("videoList", videoList);
+            intent.putExtra("position", position);
             startActivity(intent);
         }
     }

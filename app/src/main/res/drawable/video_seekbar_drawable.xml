@@ -3,7 +3,7 @@
 
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/video_seekbar_bg"></item>
+        android:drawable="@drawable/video_seekbar_bg"/>
 
     <item android:id="@android:id/secondaryProgress">
         <clip>
@@ -21,7 +21,7 @@
 
     <item
         android:id="@android:id/progress"
-        android:drawable="@drawable/video_seekbar_progress"></item>
+        android:drawable="@drawable/video_seekbar_progress"/>
 
 </layer-list>
 

@@ -63,7 +63,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     /**
      * 对统一的按钮进行统一处理
      *
-     * @param v
+     * @param v 点击的View
      */
     @Override
     public void onClick(View v) {

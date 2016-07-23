@@ -52,7 +52,7 @@ public class MainActivity extends BaseActivity {
         mVideoText.setOnClickListener(this);
         mMusicText.setOnClickListener(this);
 
-        mFragments = new ArrayList<Fragment>();
+        mFragments = new ArrayList<>();
         mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), mFragments);
         mViewPager.setAdapter(mPagerAdapter);
 

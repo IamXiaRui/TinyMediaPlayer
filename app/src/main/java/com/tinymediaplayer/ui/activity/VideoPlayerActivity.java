@@ -21,20 +21,30 @@ import com.tinymediaplayer.R;
 import com.tinymediaplayer.bean.VideoItemBean;
 import com.tinymediaplayer.utils.StringUtil;
 
+import java.util.ArrayList;
+
 /**
  * 视频播放界面
  */
 public class VideoPlayerActivity extends BaseActivity {
 
     private VideoView mVideoView;
-    private ImageView mPauseImage;
-    private TextView mTopTitleText;
+    private ImageView mPauseImage, mTopBatteryImage, mMuteImage, mPreImage, mNextImage;
+    private TextView mTopTitleText, mTopTimeText, mYetTimeText, mAllTimeText;
     private MyBatteryBroadcastReceiver batteryReceiver;
-    private ImageView mTopBatteryImage;
-    private TextView mTopTimeText;
+    private SeekBar mPlayVoiceBar, mPlayTimeBar;
+    private AudioManager mAudioManeger;
+    private int oldVolume, mStartVolume, mCurrentVideoPosition;
+    private float mStartX, mStartY, mStartAlpha;
+    private View mCoverView;
+    private VideoOnSeekBarChangeListener seekBarChangeListener;
+    private ArrayList<VideoItemBean> mVideoList;
 
-    //更新时间标志位
+    //更新系统时间标志位
     private static final int UPDATE_SYSTEM_TIME = 0;
+    //更新播放时间标志位
+    private static final int UPDATE_PLAYER_TIME = 1;
+
     //更新系统时间
     private Handler mHanlder = new Handler() {
         @Override
@@ -44,18 +54,12 @@ public class VideoPlayerActivity extends BaseActivity {
                 case UPDATE_SYSTEM_TIME:
                     updateSystemTime();
                     break;
+                case UPDATE_PLAYER_TIME:
+                    updatePlayerTime();
+                    break;
             }
         }
     };
-    private SeekBar mTopVoiceBar;
-    private AudioManager mAudioManeger;
-    private ImageView mMuteImage;
-    private int oldVolume;
-    private float mStartY;
-    private int mStartVolume;
-    private View mCoverView;
-    private float mStartAlpha;
-    private float mStartX;
 
     @Override
     public int getLayoutId() {
@@ -75,25 +79,38 @@ public class VideoPlayerActivity extends BaseActivity {
         mTopTitleText = (TextView) findViewById(R.id.tv_top_title);
         mTopBatteryImage = (ImageView) findViewById(R.id.iv_top_battery);
         mTopTimeText = (TextView) findViewById(R.id.tv_top_time);
-        mTopVoiceBar = (SeekBar) findViewById(R.id.sb_top_voice);
+        mPlayVoiceBar = (SeekBar) findViewById(R.id.sb_top_voice);
         mMuteImage = (ImageView) findViewById(R.id.iv_top_mute);
-        //底部面板
-        mPauseImage = (ImageView) findViewById(R.id.iv_videoplayer_pause);
 
+        //底部面板
+        mPauseImage = (ImageView) findViewById(R.id.iv_bottom_pause);
+        mYetTimeText = (TextView) findViewById(R.id.tv_bottom_yettime);
+        mPlayTimeBar = (SeekBar) findViewById(R.id.sb_bottom_playertime);
+        mAllTimeText = (TextView) findViewById(R.id.tv_bottom_alltime);
+        mPreImage = (ImageView) findViewById(R.id.iv_bottom_pre);
+        mNextImage = (ImageView) findViewById(R.id.iv_bottom_next);
 
     }
 
+    /**
+     * 绑定相关监听器、适配器
+     */
     @Override
     public void initListener() {
-        mVideoView.setOnPreparedListener(new MyOnPreparedListener());
+        mVideoView.setOnPreparedListener(new VideoOnPreparedListener());
+        mVideoView.setOnCompletionListener(new VideoOnCompletionListener());
         mPauseImage.setOnClickListener(this);
+        mPreImage.setOnClickListener(this);
+        mNextImage.setOnClickListener(this);
 
         //注册电量广播
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         batteryReceiver = new MyBatteryBroadcastReceiver();
         registerReceiver(batteryReceiver, intentFilter);
 
-        mTopVoiceBar.setOnSeekBarChangeListener(new VoiceOnSeekBarChangeListener());
+        seekBarChangeListener = new VideoOnSeekBarChangeListener();
+        mPlayVoiceBar.setOnSeekBarChangeListener(seekBarChangeListener);
+        mPlayTimeBar.setOnSeekBarChangeListener(seekBarChangeListener);
         mMuteImage.setOnClickListener(this);
     }
 
@@ -102,22 +119,35 @@ public class VideoPlayerActivity extends BaseActivity {
      */
     @Override
     public void initData() {
-        VideoItemBean videoItemBean = (VideoItemBean) getIntent().getSerializableExtra("videoItemBean");
-
-        //设置视频的URL
-        mVideoView.setVideoURI(Uri.parse(videoItemBean.getPath()));
+        mVideoList = (ArrayList<VideoItemBean>) getIntent().getSerializableExtra("videoList");
+        mCurrentVideoPosition = getIntent().getIntExtra("position", -1);
+        //播放选中的视频
+        playItemVideo();
         //初始化亮度为最亮
         ViewHelper.setAlpha(mCoverView, 0);
-        //设置视频的标题
-        mTopTitleText.setText(videoItemBean.getTitle());
         //动态更新系统时间
         updateSystemTime();
         //设置音量进度条总长度
         mAudioManeger = (AudioManager) getSystemService(AUDIO_SERVICE);
         int maxVoice = mAudioManeger.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        mTopVoiceBar.setMax(maxVoice);
+        mPlayVoiceBar.setMax(maxVoice);
         //设置当前音量
-        mTopVoiceBar.setProgress(getCurrentVolume());
+        mPlayVoiceBar.setProgress(getCurrentVolume());
+    }
+
+    /**
+     * 播放选中的视频
+     */
+    private void playItemVideo() {
+        VideoItemBean videoItemBean = mVideoList.get(mCurrentVideoPosition);
+        //设置视频的URL
+        mVideoView.setVideoURI(Uri.parse(videoItemBean.getPath()));
+        //设置视频的标题
+        mTopTitleText.setText(videoItemBean.getTitle());
+        //设置当前视频的总长度
+        mAllTimeText.setText(StringUtil.formatDuration(videoItemBean.getDuration()));
+        //设置播放进度条最大长度
+        mPlayTimeBar.setMax(videoItemBean.getDuration());
     }
 
     /**
@@ -137,9 +167,27 @@ public class VideoPlayerActivity extends BaseActivity {
     @Override
     public void processClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_videoplayer_pause:
+            case R.id.iv_bottom_pause:
                 //更换点击状态
                 switchPauseStatus();
+                break;
+            case R.id.iv_bottom_pre:
+                //点击播放上一个视频
+                if (mCurrentVideoPosition != 0) {
+                    mCurrentVideoPosition--;
+                    playItemVideo();
+                }
+                //切换按钮样式
+                updatePreAndNextBtn();
+                break;
+            case R.id.iv_bottom_next:
+                //点击播放下一个视频
+                if (mCurrentVideoPosition != mVideoList.size() - 1) {
+                    mCurrentVideoPosition++;
+                    playItemVideo();
+                }
+                //切换按钮样式
+                updatePreAndNextBtn();
                 break;
             case R.id.iv_top_mute:
                 //点击静音状态
@@ -148,6 +196,13 @@ public class VideoPlayerActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 更新上一个与下一个的按钮
+     */
+    private void updatePreAndNextBtn() {
+        mPreImage.setEnabled(mCurrentVideoPosition != 0);
+        mNextImage.setEnabled(mCurrentVideoPosition != mVideoList.size() - 1);
+    }
 
     /**
      * 切换视频播放/暂停状态
@@ -186,7 +241,7 @@ public class VideoPlayerActivity extends BaseActivity {
      */
     private void updateVolume(int volume) {
         mAudioManeger.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
-        mTopVoiceBar.setProgress(volume);
+        mPlayVoiceBar.setProgress(volume);
     }
 
     /**
@@ -196,9 +251,13 @@ public class VideoPlayerActivity extends BaseActivity {
         if (mVideoView.isPlaying()) {
             // 正在播放
             mPauseImage.setImageResource(R.drawable.video_pause_selector);
+            //用延时方式发送时间消息
+            mHanlder.sendEmptyMessageDelayed(UPDATE_PLAYER_TIME, 500);
         } else {
             // 暂停状态
             mPauseImage.setImageResource(R.drawable.video_play_selector);
+            //停止时间更新Handler
+            mHanlder.removeMessages(UPDATE_PLAYER_TIME);
         }
     }
 
@@ -275,7 +334,7 @@ public class VideoPlayerActivity extends BaseActivity {
      */
     private void changeVolume(float movePercent) {
         //变化音量 = 手指滑动距离百分比 * 最大音量
-        int offsetVolume = (int) (movePercent * mTopVoiceBar.getMax());
+        int offsetVolume = (int) (movePercent * mPlayVoiceBar.getMax());
         //最终的音量 = 初始音量 + 变化的音量
         int finalVolume = mStartVolume + offsetVolume;
         //设置音量
@@ -285,14 +344,54 @@ public class VideoPlayerActivity extends BaseActivity {
     /**
      * 视频准备事件监听器
      */
-    private class MyOnPreparedListener implements MediaPlayer.OnPreparedListener {
+    private class VideoOnPreparedListener implements MediaPlayer.OnPreparedListener {
         @Override
         public void onPrepared(MediaPlayer mp) {
             //必须准备完成后才能开启视频
             mVideoView.start();
             // 更新暂停按钮使用的图片
             updatePauseBtn();
+            //更新已播放时间
+            updatePlayerTime();
         }
+    }
+
+    /**
+     * 视频播放完成的监听器
+     */
+    private class VideoOnCompletionListener implements MediaPlayer.OnCompletionListener {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            //避免系统时间错误 直接更新已时间为视频长度
+            updateBarPosition(mp.getDuration());
+            //更新播放/暂停图标
+            updatePauseBtn();
+            //停止时间更新Handler
+            mHanlder.removeMessages(UPDATE_PLAYER_TIME);
+        }
+    }
+
+    /**
+     * 更新已播放时间
+     */
+    private void updatePlayerTime() {
+        int currentPosition = mVideoView.getCurrentPosition();
+        //更新播放进度条的位置
+        updateBarPosition(currentPosition);
+        //发送延迟消息
+        mHanlder.sendEmptyMessageDelayed(UPDATE_PLAYER_TIME, 500);
+    }
+
+    /**
+     * 更新播放进度条的位置
+     *
+     * @param currentPosition 当前位置
+     */
+    private void updateBarPosition(int currentPosition) {
+        //更新已播放时间进度
+        mYetTimeText.setText(StringUtil.formatDuration(currentPosition));
+        //设置当前进度条
+        mPlayTimeBar.setProgress(mVideoView.getCurrentPosition());
     }
 
     /**
@@ -332,15 +431,25 @@ public class VideoPlayerActivity extends BaseActivity {
     /**
      * 音量进度条滑动监听
      */
-    private class VoiceOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+    private class VideoOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             //如果不是用户点击的 不处理
             if (!fromUser) {
                 return;
             }
-            //动态更改音量
-            mAudioManeger.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+            switch (seekBar.getId()) {
+                case R.id.sb_top_voice:
+                    //动态更改音量
+                    mAudioManeger.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+                    break;
+                case R.id.sb_bottom_playertime:
+                    //动态更改播放进度
+                    mVideoView.seekTo(progress);
+                    //重新更新时间进度
+                    updateBarPosition(progress);
+                    break;
+            }
         }
 
         @Override
@@ -353,4 +462,6 @@ public class VideoPlayerActivity extends BaseActivity {
 
         }
     }
+
+
 }
