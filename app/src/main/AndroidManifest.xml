@@ -25,6 +25,9 @@
             android:name=".ui.activity.VitamioPlayerActivity"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+        <activity
+            android:name=".ui.activity.MusicPlayerActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

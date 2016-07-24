@@ -2,6 +2,7 @@ package com.tinymediaplayer.ui.fragment;
 
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.provider.MediaStore.Audio.Media;
 import android.view.View;
@@ -12,11 +13,12 @@ import com.tinymediaplayer.R;
 import com.tinymediaplayer.adapter.MusicListAdapter;
 import com.tinymediaplayer.bean.MusicItemBean;
 import com.tinymediaplayer.db.MusicAsyncQueryHandler;
+import com.tinymediaplayer.ui.activity.MusicPlayerActivity;
 
 import java.util.ArrayList;
 
 /**
- * 音乐界面
+ * 音乐列表界面
  */
 public class MusicListFragment extends BaseFragment {
 
@@ -54,18 +56,21 @@ public class MusicListFragment extends BaseFragment {
 
     }
 
+    /**
+     * 音乐列表点击事件监听
+     */
     private class OnMusicItemClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             // 获取被点击的数据
             Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-            ArrayList<MusicItemBean> audioItems = MusicItemBean.instanceListFromCursor(cursor);
+            ArrayList<MusicItemBean> musicItems = MusicItemBean.instanceListFromCursor(cursor);
 
             // 跳转到播放界面
-//            Intent intent = new Intent(getActivity(), AudioPlayerActivity.class);
-//            intent.putExtra("audioItems",audioItems);
-//            intent.putExtra("position",position);
-//            startActivity(intent);
+            Intent intent = new Intent(getActivity(), MusicPlayerActivity.class);
+            intent.putExtra("musicItems", musicItems);
+            intent.putExtra("currentPosition", position);
+            startActivity(intent);
         }
     }
 }
