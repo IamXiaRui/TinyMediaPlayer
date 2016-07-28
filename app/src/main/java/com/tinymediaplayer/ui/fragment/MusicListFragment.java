@@ -65,7 +65,6 @@ public class MusicListFragment extends BaseFragment {
             // 获取被点击的数据
             Cursor cursor = (Cursor) parent.getItemAtPosition(position);
             ArrayList<MusicItemBean> musicItems = MusicItemBean.instanceListFromCursor(cursor);
-
             // 跳转到播放界面
             Intent intent = new Intent(getActivity(), MusicPlayerActivity.class);
             intent.putExtra("musicItems", musicItems);

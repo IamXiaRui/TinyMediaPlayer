@@ -4,12 +4,4 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--顶部-->
-    <include layout="@layout/musicplayer_top" />
-
-    <!--中间-->
-    <include layout="@layout/musicplayer_middle" />
-
-    <!--底部-->
-    <include layout="@layout/musicplayer_bottom" />
 </LinearLayout>

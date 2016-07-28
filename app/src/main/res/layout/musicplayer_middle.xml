@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--示波器-->
+    <ImageView
+        android:id="@+id/iv_mid_wave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/audio_wave_anim" />
+
+    <!--歌手名-->
+    <TextView
+        android:id="@+id/tv_mid_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_mid_wave"
+        android:layout_centerHorizontal="true"
+        android:text="歌手名"
+        android:textColor="#fff"
+        android:textSize="16sp" />
+
+    <!--歌词-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/iv_mid_wave"
+        android:gravity="center"
+        android:text="歌词"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+
+</RelativeLayout>

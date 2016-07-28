@@ -44,7 +44,7 @@ public class MusicListAdapter extends CursorAdapter {
         MusicItemBean musicItemBean = MusicItemBean.instanceFromCursor(cursor);
 
         holder.titleText.setText(musicItemBean.getTitle());
-        holder.singerText.setText(musicItemBean.getArties());
+        holder.singerText.setText(musicItemBean.getArtist());
     }
 
     private class ViewHolder {

@@ -43,7 +43,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
      * 那么将点击事件注册也统一处理掉
      */
     private void regCommonBtn() {
-        View view = findViewById(R.id.bt_back);
+        View view = findViewById(R.id.iv_back);
         if (view != null) {
             view.setOnClickListener(this);
         }
@@ -57,7 +57,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.bt_back:
+            case R.id.iv_back:
                 finish();
                 break;
             default:

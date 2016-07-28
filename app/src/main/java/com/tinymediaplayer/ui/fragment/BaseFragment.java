@@ -54,7 +54,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * 那么将点击事件注册也统一处理掉
      */
     private void regCommonBtn() {
-        View view = findViewById(R.id.bt_back);
+        View view = findViewById(R.id.iv_back);
         if (view != null) {
             view.setOnClickListener(this);
         }
@@ -68,7 +68,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.bt_back:
+            case R.id.iv_back:
                 getFragmentManager().popBackStack();
             default:
                 processClick(v);

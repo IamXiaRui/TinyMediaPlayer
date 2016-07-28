@@ -2,6 +2,7 @@ package com.tinymediaplayer.ui.activity;
 
 import android.media.MediaPlayer;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tinymediaplayer.R;
 import com.tinymediaplayer.bean.MusicItemBean;
@@ -37,6 +38,7 @@ public class MusicPlayerActivity extends BaseActivity {
         ArrayList<MusicItemBean> musicItems = (ArrayList<MusicItemBean>) getIntent().getSerializableExtra("musicItems");
         int currentPosition = getIntent().getIntExtra("currentPosition", -1);
         MusicItemBean currentMusicItem = musicItems.get(currentPosition);
+        Toast.makeText(this, currentMusicItem.getPath(), Toast.LENGTH_SHORT).show();
         //播放选中的音乐
         MediaPlayer mMediaPlayer = new MediaPlayer();
         try {

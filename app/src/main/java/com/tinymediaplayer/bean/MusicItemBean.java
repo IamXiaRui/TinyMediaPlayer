@@ -9,12 +9,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by Administrator on 2015/11/13.
+ * 音乐播放列表Bean
  */
 public class MusicItemBean implements Serializable {
 
     private String title;
-    private String arties;
+    private String artist;
     private String path;
 
     /**
@@ -27,9 +27,8 @@ public class MusicItemBean implements Serializable {
         }
 
         // 解析cursor的内容
-        musicItemBean.title = cursor.getString(cursor.getColumnIndex(Media.DISPLAY_NAME));
-        musicItemBean.title = StringUtil.formatDisplayName(musicItemBean.title);
-        musicItemBean.arties = cursor.getString(cursor.getColumnIndex(Media.ARTIST));
+        musicItemBean.title = StringUtil.formatDisplayName(cursor.getString(cursor.getColumnIndex(Media.DISPLAY_NAME)));
+        musicItemBean.artist = cursor.getString(cursor.getColumnIndex(Media.ARTIST));
         musicItemBean.path = cursor.getString(cursor.getColumnIndex(Media.DATA));
 
         return musicItemBean;
@@ -39,18 +38,18 @@ public class MusicItemBean implements Serializable {
      * 从cursor里解析出完整的播放列表
      */
     public static ArrayList<MusicItemBean> instanceListFromCursor(Cursor cursor) {
-        ArrayList<MusicItemBean> musicList = new ArrayList<>();
+        ArrayList<MusicItemBean> musicLists = new ArrayList<MusicItemBean>();
         if (cursor == null || cursor.getCount() == 0) {
-            return musicList;
+            return musicLists;
         }
 
         cursor.moveToPosition(-1);
         while (cursor.moveToNext()) {
             MusicItemBean musicItemBean = instanceFromCursor(cursor);
-            musicList.add(musicItemBean);
+            musicLists.add(musicItemBean);
         }
 
-        return musicList;
+        return musicLists;
     }
 
     public String getTitle() {
@@ -61,14 +60,6 @@ public class MusicItemBean implements Serializable {
         this.title = title;
     }
 
-    public String getArties() {
-        return arties;
-    }
-
-    public void setArties(String arties) {
-        this.arties = arties;
-    }
-
     public String getPath() {
         return path;
     }
@@ -77,12 +68,12 @@ public class MusicItemBean implements Serializable {
         this.path = path;
     }
 
-    @Override
-    public String toString() {
-        return "AudioItem{" +
-                "title='" + title + '\'' +
-                ", arties='" + arties + '\'' +
-                ", path='" + path + '\'' +
-                '}';
+    public String getArtist() {
+        return artist;
     }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
 }
